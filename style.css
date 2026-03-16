@@ -1,0 +1,105 @@
+/* Design Moderno e Responsivo */
+:root {
+    --primary: #ff4757;
+    --secondary: #2f3542;
+    --success: #2ed573;
+    --bg: #f1f2f6;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: var(--bg);
+    margin: 0;
+    padding: 15px;
+}
+
+.header {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.clima-badge {
+    display: inline-block;
+    background: var(--secondary);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    margin-top: 10px;
+}
+
+.grid-produtos {
+    display: grid;
+    gap: 15px;
+}
+
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.info h3 { margin: 0; font-size: 1.1em; }
+.info p { margin: 5px 0; color: #747d8c; font-size: 0.9em; }
+.price { color: var(--success); font-weight: bold; display: block; }
+
+.btn-whats {
+    background: var(--success);
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 0.8em;
+}
+
+.loader { text-align: center; padding: 50px; color: #57606f; }
+
+/* Estilos para o Card Profissional */
+.card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden; /* Corta a imagem nas bordas arredondadas */
+    display: flex;
+    flex-direction: column; /* Imagem em cima, texto embaixo */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease;
+}
+
+.produto-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover; /* Faz a foto preencher o espaço sem distorcer */
+}
+
+.info {
+    padding: 15px;
+}
+
+.footer-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+
+.btn-whats {
+    background: #25D366;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 50px; /* Botão arredondado */
+    text-decoration: none;
+    font-size: 14px;
+    box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
+}
+
