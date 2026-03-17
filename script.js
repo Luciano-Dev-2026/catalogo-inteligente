@@ -1,70 +1,92 @@
-// ==========================================
-// 1. CONFIGURAÇÕES DO CLIENTE (Mude aqui)
-// ==========================================
-const CONFIG = {
-    nomeLoja: "NOME DA LOJA AQUI",
-    whatsapp: "5521976703419", // DDD + Número
-    temperaturaLimite: 22, // Abaixo disso é "frio", acima é "quente"
-    corPrincipal: "#ff4757" // Cor da marca do cliente
-};
+// CONFIGURAÇÕES DO NEGÓCIO
+const MEU_WHATSAPP = "5521976703419"; 
 
-// ==========================================
-// 2. BANCO DE PRODUTOS DO CLIENTE
-// ==========================================
+// BANCO DE DADOS DE PRODUTOS (Com links de imagens)
+// DICA: Você pode usar links de imagens do Instagram da loja ou do Google Fotos
 const produtos = [
-    // PRODUTOS PARA DIAS QUENTES
-    { nome: "Produto Calor 1", desc: "Descrição...", preco: "10,00", clima: "quente", img: "link-da-foto" },
-    { nome: "Produto Calor 2", desc: "Descrição...", preco: "15,00", clima: "quente", img: "link-da-foto" },
-    
-    // PRODUTOS PARA DIAS FRIOS
-    { nome: "Produto Frio 1", desc: "Descrição...", preco: "20,00", clima: "frio", img: "link-da-foto" },
-    { nome: "Produto Frio 2", desc: "Descrição...", preco: "25,00", clima: "frio", img: "link-da-foto" }
+    { 
+        nome: "Açaí Premium", 
+        desc: "Com leite em pó, morango e granola.", 
+        preco: "22,00", 
+        clima: "quente",
+        imagem: "https://images.unsplash.com/photo-1590301157890-4810ed352733?w=500&q=80"
+    },
+    { 
+        nome: "Suco de Laranja 500ml", 
+        desc: "100% natural e super gelado.", 
+        preco: "12,00", 
+        clima: "quente",
+        imagem: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=500&q=80"
+    },
+    { 
+        nome: "Chocolate Quente Belga", 
+        desc: "Cremoso, com raspas de chocolate.", 
+        preco: "15,00", 
+        clima: "frio",
+        imagem: "https://images.unsplash.com/photo-1544787210-2827443cb69b?w=500&q=80"
+    },
+    { 
+        nome: "Sopa de Mandioca", 
+        desc: "Receita caseira com carne desfiada.", 
+        preco: "25,90", 
+        clima: "frio",
+        imagem: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=500&q=80"
+    }
 ];
 
-// ==========================================
-// 3. MOTOR DO SISTEMA (Não precisa mexer)
-// ==========================================
-async function iniciarSistema() {
-    document.title = CONFIG.nomeLoja;
-    document.querySelector('h1').innerText = CONFIG.nomeLoja;
-    
+document.addEventListener("DOMContentLoaded", () => {
+    pegarLocalizacao();
+});
+
+function pegarLocalizacao() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             (pos) => buscarClima(pos.coords.latitude, pos.coords.longitude),
-            () => buscarClima(-23.55, -46.63) // Padrão SP
+            () => buscarClima(-23.55, -46.63) // São Paulo como padrão
         );
     }
 }
 
 async function buscarClima(lat, lon) {
     try {
-        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-        const data = await res.json();
-        renderizar(data.current_weather.temperature);
-    } catch (e) { renderizar(25); }
+        const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+        const data = await response.json();
+        const temp = data.current_weather.temperature;
+        montarVitrine(temp);
+    } catch (e) {
+        montarVitrine(25); 
+    }
 }
 
-function renderizar(temp) {
+function montarVitrine(temp) {
     const lista = document.getElementById('lista-produtos');
     const status = document.getElementById('status-clima');
-    const tipoClima = temp > CONFIG.temperaturaLimite ? "quente" : "frio";
+    const loading = document.getElementById('loading');
     
-    status.innerHTML = `🌡️ ${temp}°C | Sugestões de Hoje`;
+    if(loading) loading.style.display = 'none';
     
+    const tipoClima = temp > 22 ? "quente" : "frio";
+    
+    status.innerHTML = `🌡️ ${temp}°C | Vitrine de Hoje`;
+
     const filtrados = produtos.filter(p => p.clima === tipoClima);
-    lista.innerHTML = filtrados.map(p => `
-        <div class="card">
-            <img src="${p.img}" class="produto-img">
-            <div class="info">
-                <h3>${p.nome}</h3>
-                <p>${p.desc}</p>
-                <div class="footer-card">
-                    <span class="price">R$ ${p.preco}</span>
-                    <a href="https://wa.me/${CONFIG.whatsapp}?text=Quero o ${p.nome}" class="btn-whats">PEDIR</a>
+    
+    lista.innerHTML = ""; // Limpa antes de renderizar
+    
+    filtrados.forEach(p => {
+        const msg = window.encodeURIComponent(`Olá! Quero pedir o ${p.nome}`);
+        lista.innerHTML += `
+            <div class="card">
+                <img src="${p.imagem}" alt="${p.nome}" class="produto-img">
+                <div class="info">
+                    <h3>${p.nome}</h3>
+                    <p>${p.desc}</p>
+                    <div class="footer-card">
+                        <span class="price">R$ ${p.preco}</span>
+                        <a href="https://wa.me/${+5521976703419}?text=${msg}" class="btn-whats">PEDIR</a>
+                    </div>
                 </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    });
 }
-
-iniciarSistema();
